@@ -1,4 +1,4 @@
-#include "basic_control_commands.hpp"
+#include "as2_control_command_handlers/basic_control_commands.hpp"
 
 namespace aerostack2
 {
@@ -12,7 +12,7 @@ namespace aerostack2
       if (rclcpp_node_ptr_ == nullptr){
         std::cout << "Creating rclcpp_node_ptr_" << std::endl;
         rclcpp_node_ptr_ = std::make_shared<rclcpp::Node>("command_handler_service_node");
-        set_mode_client_ = rclcpp_node_ptr_->create_client<aerostack2_msgs::srv::SetPlatformControlMode>(node_ptr_->generate_srv_name("set_platform_control_mode"));
+        set_mode_client_ = rclcpp_node_ptr_->create_client<aerostack2_msgs::srv::SetPlatformControlMode>(node_ptr_->generate_topic_name("set_platform_control_mode"));
       }
       // TODO: STANDARIZE TOPICS NAMES
       command_pose_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::PoseStamped>(node_ptr_->generate_topic_name("actuator_command/pose"), 10);

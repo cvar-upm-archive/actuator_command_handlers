@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
-project(pixhawk_test)
 set(PROJECT_NAME as2_control_command_handlers)
+project(${PROJECT_NAME})
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -23,23 +23,16 @@ find_package(std_srvs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-set(SOURCE_CPP_FILES 
-  src/${PROJECT_NAME}/basic_control_commands.cpp
-  src/${PROJECT_NAME}/position_control.cpp
-  src/${PROJECT_NAME}/speed_control.cpp
-  )
-
-set(HEADER_HPP_FILES
-  include/${PROJECT_NAME}/basic_control_commands.hpp
-  include/${PROJECT_NAME}/position_control.hpp
-  include/${PROJECT_NAME}/speed_control.hpp
-)
-
 include_directories(
   include
   include/${PROJECT_NAME}
-  ${aerostack2_core_INCLUDE_DIRS}
 )
+
+set(SOURCE_CPP_FILES 
+  src/basic_control_commands.cpp
+  src/position_control.cpp
+  src/speed_control.cpp
+  )
 
 set(THIS_PROJECT_DEPENDENCIES
 rclcpp
@@ -53,15 +46,22 @@ aerostack2_msgs
 std_srvs
 )
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_CPP_FILES})
+add_library(${PROJECT_NAME} ${SOURCE_CPP_FILES})
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+
 ament_target_dependencies(${PROJECT_NAME} ${THIS_PROJECT_DEPENDENCIES})
-ament_export_interfaces(${PROJECT_NAME}_export HAS_LIBRARY_TARGET)
-ament_export_libraries(${PROJECT_NAME})
-ament_export_include_directories(include)
+ament_export_include_directories(include)    
+ament_export_interfaces(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(
   ament_cmake
   ${THIS_PROJECT_DEPENDENCIES}
 )
+ament_export_libraries(${PROJECT_NAME})
+
+
 
 
 if(BUILD_TESTING)
@@ -76,17 +76,17 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  TARGETS ${PROJECT_NAME}
-  EXPORT ${PROJECT_NAME}_export
-  ARCHIVE DESTINATION lib/${PROJECT_NAME}
-  LIBRARY DESTINATION lib/${PROJECT_NAME}
-  RUNTIME DESTINATION bin/${PROJECT_NAME}
-)
-    
-install(
   DIRECTORY include/
   DESTINATION include
 )
 
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
 
 ament_package()
