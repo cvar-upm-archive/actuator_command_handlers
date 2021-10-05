@@ -15,10 +15,8 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
-find_package(px4_msgs REQUIRED)
 find_package(aerostack2_core REQUIRED)
 find_package(aerostack2_msgs REQUIRED)
-find_package(px4_ros_com REQUIRED)
 find_package(std_srvs REQUIRED)
 
 
@@ -40,25 +38,30 @@ set(HEADER_HPP_FILES
 include_directories(
   include
   include/${PROJECT_NAME}
+  ${aerostack2_core_INCLUDE_DIRS}
 )
 
-
-add_library(${PROJECT_NAME} ${HEADER_HPP_FILES} ${SOURCE_CPP_FILES})
-ament_target_dependencies(${PROJECT_NAME} 
+set(THIS_PROJECT_DEPENDENCIES
 rclcpp
 rclcpp_action
 std_msgs
 sensor_msgs
 geometry_msgs
 nav_msgs
-px4_msgs
 aerostack2_core
 aerostack2_msgs
-px4_ros_com
 std_srvs
 )
 
-ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
+add_library(${PROJECT_NAME} SHARED ${SOURCE_CPP_FILES})
+ament_target_dependencies(${PROJECT_NAME} ${THIS_PROJECT_DEPENDENCIES})
+ament_export_interfaces(${PROJECT_NAME}_export HAS_LIBRARY_TARGET)
+ament_export_libraries(${PROJECT_NAME})
+ament_export_include_directories(include)
+ament_export_dependencies(
+  ament_cmake
+  ${THIS_PROJECT_DEPENDENCIES}
+)
 
 
 if(BUILD_TESTING)
@@ -73,17 +76,17 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY include/${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}_export
+  ARCHIVE DESTINATION lib/${PROJECT_NAME}
+  LIBRARY DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin/${PROJECT_NAME}
+)
+    
+install(
+  DIRECTORY include/
   DESTINATION include
 )
 
-install(
-  TARGETS ${PROJECT_NAME}
-  EXPORT ${PROJECT_NAME}
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-)
 
 ament_package()

@@ -102,7 +102,7 @@ namespace aerostack2
       RCLCPP_INFO(rclcpp_node_ptr_->get_logger(), "service available");
 
       auto result = set_mode_client_->async_send_request(request);
-      if (rclcpp::spin_until_future_complete(rclcpp_node_ptr_, result,std::chrono::seconds(1)) == rclcpp::FutureReturnCode::SUCCESS)
+      if (rclcpp::spin_until_future_complete(rclcpp_node_ptr_, result,std::chrono::seconds(1)) == rclcpp::executor::FutureReturnCode::SUCCESS)
       {
         RCLCPP_INFO(rclcpp_node_ptr_->get_logger(), "Platform Control Mode changed sucessfully");
       }
