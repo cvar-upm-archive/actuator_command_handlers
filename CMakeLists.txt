@@ -54,7 +54,7 @@ target_include_directories(${PROJECT_NAME}
 
 ament_target_dependencies(${PROJECT_NAME} ${THIS_PROJECT_DEPENDENCIES})
 ament_export_include_directories(include)    
-ament_export_interfaces(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(
   ament_cmake
   ${THIS_PROJECT_DEPENDENCIES}
