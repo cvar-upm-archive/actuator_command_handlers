@@ -5,7 +5,7 @@ namespace aerostack2
   namespace controlCommandsHandlers
   {
     //TODO: fix this bool initializer, so ugly IMPORTANT!!
-    BasicControlCommandsHandler::BasicControlCommandsHandler(aerostack2::Node *aerostack2_ptr, bool thrust_is_normalized )
+    BasicControlCommandsHandler::BasicControlCommandsHandler(aerostack2::Node *aerostack2_ptr)
         : node_ptr_(aerostack2_ptr)
     {
       number_of_instances_ ++;
@@ -18,12 +18,7 @@ namespace aerostack2
       // TODO: STANDARIZE TOPICS NAMES
       command_pose_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::PoseStamped>(node_ptr_->generate_topic_name("actuator_command/pose"), 10);
       command_twist_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::TwistStamped>(node_ptr_->generate_topic_name("actuator_command/twist"), 10);
-      if (thrust_is_normalized){
-        command_thrust_pub_ = node_ptr_->create_publisher<aerostack2_msgs::msg::Thrust>(node_ptr_->generate_topic_name("actuator_command/thrust"), 10);
-      }
-      else{
-        command_thrust_pub_ = node_ptr_->create_publisher<aerostack2_msgs::msg::Thrust>(node_ptr_->generate_topic_name("actuator_command/unnormalized_thrust"), 10);
-      }
+      command_thrust_pub_ = node_ptr_->create_publisher<aerostack2_msgs::msg::Thrust>(node_ptr_->generate_topic_name("actuator_command/thrust"), 10);
 
     };
 
