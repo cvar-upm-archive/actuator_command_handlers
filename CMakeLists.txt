@@ -32,6 +32,7 @@ set(SOURCE_CPP_FILES
   src/basic_control_commands.cpp
   src/position_control.cpp
   src/speed_control.cpp
+  src/acro_control.cpp
   )
 
 set(THIS_PROJECT_DEPENDENCIES

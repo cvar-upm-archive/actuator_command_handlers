@@ -21,7 +21,7 @@ namespace controlCommandsHandlers{
 class BasicControlCommandsHandler{
 
 public:
-    BasicControlCommandsHandler(aerostack2::Node* aerostack2_ptr);
+    BasicControlCommandsHandler(aerostack2::Node* aerostack2_ptr, bool thrust_is_normalized = false);
     ~BasicControlCommandsHandler();
 protected:
 
