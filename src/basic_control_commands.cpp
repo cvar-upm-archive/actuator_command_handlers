@@ -13,12 +13,12 @@ namespace aerostack2
       if (rclcpp_node_ptr_ == nullptr){
         std::cout << "Creating rclcpp_node_ptr_" << std::endl;
         rclcpp_node_ptr_ = std::make_shared<rclcpp::Node>("command_handler_service_node");
-        set_mode_client_ = rclcpp_node_ptr_->create_client<aerostack2_msgs::srv::SetPlatformControlMode>(node_ptr_->generate_topic_name("set_platform_control_mode"));
+        set_mode_client_ = rclcpp_node_ptr_->create_client<aerostack2_msgs::srv::SetPlatformControlMode>(node_ptr_->generate_global_name("set_platform_control_mode"));
       }
       // TODO: STANDARIZE TOPICS NAMES
-      command_pose_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::PoseStamped>(node_ptr_->generate_topic_name("actuator_command/pose"), 10);
-      command_twist_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::TwistStamped>(node_ptr_->generate_topic_name("actuator_command/twist"), 10);
-      command_thrust_pub_ = node_ptr_->create_publisher<aerostack2_msgs::msg::Thrust>(node_ptr_->generate_topic_name("actuator_command/thrust"), 10);
+      command_pose_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::PoseStamped>(node_ptr_->generate_global_name("actuator_command/pose"), 10);
+      command_twist_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::TwistStamped>(node_ptr_->generate_global_name("actuator_command/twist"), 10);
+      command_thrust_pub_ = node_ptr_->create_publisher<aerostack2_msgs::msg::Thrust>(node_ptr_->generate_global_name("actuator_command/thrust"), 10);
 
     };
 
@@ -41,7 +41,7 @@ namespace aerostack2
     {
       if (actual_controller_ptr_ != this)
       {
-        std::cout << "BasicControlCommandsHandler::sendCommand() - actual_controller_ptr_ != this" << std::endl;
+        // std::cout << "BasicControlCommandsHandler::sendCommand() - actual_controller_ptr_ != this" << std::endl;
         if (setMode(setPlatformControlMode()))
         {
           actual_controller_ptr_ = this;

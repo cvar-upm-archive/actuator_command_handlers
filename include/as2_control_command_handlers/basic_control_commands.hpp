@@ -13,6 +13,7 @@
 #include <aerostack2_msgs/msg/thrust.hpp>
 #include <aerostack2_msgs/srv/set_platform_control_mode.hpp>
 
+//TODO: RETHINK HOW CURRENT MODE IS CHECKED AND CHANGED
 
 namespace aerostack2{
 
