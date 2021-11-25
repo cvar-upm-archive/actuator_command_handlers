@@ -37,7 +37,7 @@ bool PositionControl::sendPositionCommandWithYawSpeed(
   return this->sendCommand();
 };
 
-as2_msgs::msg::PlatformControlMode PositionControl::setPlatformControlMode()
+as2_msgs::msg::PlatformControlMode PositionControl::ownSetPlatformControlMode()
 {
   as2_msgs::msg::PlatformControlMode platform_control_mode_msg;
 

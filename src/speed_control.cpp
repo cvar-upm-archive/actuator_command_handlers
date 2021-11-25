@@ -38,7 +38,7 @@ bool SpeedControl::sendSpeedCommandWithYawSpeed(
   return this->sendCommand();
 };
 
-as2_msgs::msg::PlatformControlMode SpeedControl::setPlatformControlMode()
+as2_msgs::msg::PlatformControlMode SpeedControl::ownSetPlatformControlMode()
 {
   as2_msgs::msg::PlatformControlMode platform_control_mode_msg;
 

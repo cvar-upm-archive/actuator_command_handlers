@@ -28,7 +28,7 @@ bool AcroControl::sendAngleRatesWithNormalizedThrust(
   return this->sendCommand();
 };
 
-as2_msgs::msg::PlatformControlMode AcroControl::setPlatformControlMode()
+as2_msgs::msg::PlatformControlMode AcroControl::ownSetPlatformControlMode()
 {
   as2_msgs::msg::PlatformControlMode platform_control_mode_msg;
 
