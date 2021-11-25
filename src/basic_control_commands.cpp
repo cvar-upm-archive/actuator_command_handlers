@@ -46,7 +46,7 @@ BasicControlCommandsHandler::~BasicControlCommandsHandler()
 bool BasicControlCommandsHandler::sendCommand()
 {
   static auto last_time = this->node_ptr_->now();
-  
+
   setPlatformControlMode();
 
   if (this->node_ptr_->now() - last_time > rclcpp::Duration(1.0f / AUX_NODE_SPIN_RATE)) {

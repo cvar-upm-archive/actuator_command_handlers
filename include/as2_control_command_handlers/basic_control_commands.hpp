@@ -45,7 +45,7 @@ protected:
   virtual as2_msgs::msg::PlatformControlMode ownSetPlatformControlMode() = 0;
 
   bool sendCommand();
-  
+
 private:
   rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr command_twist_pub_;
   rclcpp::Publisher<as2_msgs::msg::Thrust>::SharedPtr command_thrust_pub_;
@@ -53,9 +53,7 @@ private:
   as2_msgs::msg::PlatformControlMode desired_control_mode_;
 
   bool setMode(const as2_msgs::msg::PlatformControlMode & mode);
-  void setPlatformControlMode(){
-    desired_control_mode_ = ownSetPlatformControlMode();
-  };
+  void setPlatformControlMode() { desired_control_mode_ = ownSetPlatformControlMode(); };
   void publishCommands();
 };
 

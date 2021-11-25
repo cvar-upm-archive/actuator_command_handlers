@@ -39,6 +39,5 @@ as2_msgs::msg::PlatformControlMode AcroControl::setPlatformControlMode()
   return platform_control_mode_msg;
 };
 
-
 }  // namespace controlCommandsHandlers
 }  // namespace as2
