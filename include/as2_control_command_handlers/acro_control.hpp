@@ -1,45 +1,38 @@
 #ifndef ACRO_CONTROL_COMMANDS_HPP
 #define ACRO_CONTROL_COMMANDS_HPP
 
-#include <memory>
 #include <functional>
-#include <thread>
-
-
-#include "aerostack2_core/node.hpp" 
-
-#include "basic_control_commands.hpp"
-
-#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
-#include <nav_msgs/msg/odometry.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
+#include <memory>
+#include <nav_msgs/msg/odometry.hpp>
+#include <thread>
 
-namespace aerostack2
+#include "as2_core/node.hpp"
+#include "basic_control_commands.hpp"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+
+namespace as2
 {
-  namespace controlCommandsHandlers
-  {
+namespace controlCommandsHandlers
+{
+class AcroControl : public as2::controlCommandsHandlers::BasicControlCommandsHandler
+{
+public:
+  AcroControl(as2::Node * node_ptr);
+  enum YawMode { NONE, YAW_ANGLE, YAW_RATE };
 
-    class AcroControl : public aerostack2::controlCommandsHandlers::BasicControlCommandsHandler
-    {
-    public:
-      AcroControl(aerostack2::Node *node_ptr);
-      enum YawMode
-      {
-        NONE,
-        YAW_ANGLE,
-        YAW_RATE
-      };
+  bool sendAngleRatesWithThrust(
+    const float & x, const float & y, const float & z, const float & thrust);
+  bool sendAngleRatesWithNormalizedThrust(
+    const float & x, const float & y, const float & z, const float & thrust,
+    const float & normalized_thrust);
 
-      bool sendAngleRatesWithThrust(const float& x, const float& y, const float& z, const float& thrust);
-      bool sendAngleRatesWithNormalizedThrust(const float& x, const float& y, const float& z, const float& thrust, const float& normalized_thrust);
+private:
+  as2_msgs::msg::PlatformControlMode setPlatformControlMode();
+};
 
-    private:
-      aerostack2_msgs::msg::PlatformControlMode setPlatformControlMode();
-      bool OwnSetCommands();
-    };
+}  // namespace controlCommandsHandlers
+}  // namespace as2
 
-  } // namespace controlCommandsHandlers
-} // namespace aerostack2
-
-#endif // BASIC_CONTROL_COMMANDS_HPP
+#endif  // BASIC_CONTROL_COMMANDS_HPP
