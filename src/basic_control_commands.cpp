@@ -118,6 +118,10 @@ int BasicControlCommandsHandler::number_of_instances_ = 0;
 std::shared_ptr<rclcpp::Node> BasicControlCommandsHandler::aux_node_ptr_ = nullptr;
 rclcpp::Client<as2_msgs::srv::SetPlatformControlMode>::SharedPtr
   BasicControlCommandsHandler::set_mode_client_ = nullptr;
+rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr
+  BasicControlCommandsHandler::platform_info_sub_ = nullptr;
+as2_msgs::msg::PlatformControlMode BasicControlCommandsHandler::current_mode_ =
+  as2_msgs::msg::PlatformControlMode();
 
 }  // namespace controlCommandsHandlers
 }  // namespace as2
