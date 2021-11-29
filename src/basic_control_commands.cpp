@@ -105,6 +105,7 @@ bool BasicControlCommandsHandler::setMode(const as2_msgs::msg::PlatformControlMo
     rclcpp::spin_until_future_complete(aux_node_ptr_, result, std::chrono::seconds(1)) ==
     rclcpp::executor::FutureReturnCode::SUCCESS) {
     RCLCPP_INFO(aux_node_ptr_->get_logger(), "Platform Control Mode changed sucessfully");
+    current_mode_ = mode; // set current_mode_ to the new mode to avoid issues while current_mode_ is not updated
   } else {
     RCLCPP_ERROR(
       aux_node_ptr_->get_logger(), " Platform Control Mode was not able to be settled sucessfully");

@@ -42,6 +42,7 @@ protected:
   geometry_msgs::msg::TwistStamped command_twist_msg_;
   as2_msgs::msg::Thrust command_thrust_msg_;
 
+
   virtual as2_msgs::msg::PlatformControlMode ownSetPlatformControlMode() = 0;
 
   bool sendCommand();
