@@ -15,13 +15,11 @@ BasicControlCommandsHandler::BasicControlCommandsHandler(as2::Node * as2_ptr) : 
       node_ptr_->generate_global_name("platform/info"), 10,
       [](const as2_msgs::msg::PlatformInfo::SharedPtr msg) {
         BasicControlCommandsHandler::current_mode_ = msg->current_control_mode;
-        // TODO: DELETE THIS
-        std::cout << "Current Mode Changed" << std::endl;
       });
   }
 
   RCLCPP_INFO(
-    aux_node_ptr_->get_logger(), "There are %d instances of BasicControlCommandsHandler created",
+    node_ptr_->get_logger(), "There are %d instances of BasicControlCommandsHandler created",
     number_of_instances_);
 
   command_pose_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::PoseStamped>(
@@ -51,6 +49,7 @@ bool BasicControlCommandsHandler::sendCommand()
 
   if (this->node_ptr_->now() - last_time > rclcpp::Duration(1.0f / AUX_NODE_SPIN_RATE)) {
     rclcpp::spin_some(this->aux_node_ptr_);
+    last_time = this->node_ptr_->now();
   }
 
   if (this->current_mode_ != desired_control_mode_) {
@@ -67,6 +66,7 @@ bool BasicControlCommandsHandler::sendCommand()
 void BasicControlCommandsHandler::publishCommands()
 {
   rclcpp::Time stamp = node_ptr_->now();
+  // TODO: Use drone_id_ in odometry_frame_id
   command_pose_msg_.header.stamp = stamp;
   command_pose_msg_.header.frame_id = "odom";
 
