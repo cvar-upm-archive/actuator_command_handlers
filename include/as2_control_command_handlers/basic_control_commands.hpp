@@ -13,8 +13,6 @@
 #include "as2_core/node.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-//TODO: RETHINK HOW CURRENT MODE IS CHECKED AND CHANGED
-
 #define AUX_NODE_SPIN_RATE 10
 
 namespace as2
@@ -30,10 +28,8 @@ public:
 private:
   static int number_of_instances_;
 
-  static std::shared_ptr<rclcpp::Node> aux_node_ptr_;
   static rclcpp::Client<as2_msgs::srv::SetPlatformControlMode>::SharedPtr set_mode_client_;
   static rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr platform_info_sub_;
-
   static as2_msgs::msg::PlatformControlMode current_mode_;
 
 protected:
@@ -41,7 +37,6 @@ protected:
   geometry_msgs::msg::PoseStamped command_pose_msg_;
   geometry_msgs::msg::TwistStamped command_twist_msg_;
   as2_msgs::msg::Thrust command_thrust_msg_;
-
 
   virtual as2_msgs::msg::PlatformControlMode ownSetPlatformControlMode() = 0;
 

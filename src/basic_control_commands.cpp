@@ -6,38 +6,36 @@ namespace controlCommandsHandlers
 {
 BasicControlCommandsHandler::BasicControlCommandsHandler(as2::Node * as2_ptr) : node_ptr_(as2_ptr)
 {
-  number_of_instances_++;
-  if (aux_node_ptr_ == nullptr) {
-    aux_node_ptr_ = std::make_shared<rclcpp::Node>("command_handler_aux_node");
-    set_mode_client_ = aux_node_ptr_->create_client<as2_msgs::srv::SetPlatformControlMode>(
+  if (number_of_instances_ == 0) {
+    command_pose_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::PoseStamped>(
+      node_ptr_->generate_global_name("actuator_command/pose"), 10);
+    command_twist_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::TwistStamped>(
+      node_ptr_->generate_global_name("actuator_command/twist"), 10);
+    command_thrust_pub_ = node_ptr_->create_publisher<as2_msgs::msg::Thrust>(
+      node_ptr_->generate_global_name("actuator_command/thrust"), 10);
+
+    set_mode_client_ = node_ptr_->create_client<as2_msgs::srv::SetPlatformControlMode>(
       node_ptr_->generate_global_name("set_platform_control_mode"));
-    platform_info_sub_ = aux_node_ptr_->create_subscription<as2_msgs::msg::PlatformInfo>(
+    platform_info_sub_ = node_ptr_->create_subscription<as2_msgs::msg::PlatformInfo>(
       node_ptr_->generate_global_name("platform/info"), 10,
       [](const as2_msgs::msg::PlatformInfo::SharedPtr msg) {
         BasicControlCommandsHandler::current_mode_ = msg->current_control_mode;
       });
   }
 
+  number_of_instances_++;
   RCLCPP_INFO(
     node_ptr_->get_logger(), "There are %d instances of BasicControlCommandsHandler created",
     number_of_instances_);
-
-  command_pose_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::PoseStamped>(
-    node_ptr_->generate_global_name("actuator_command/pose"), 10);
-  command_twist_pub_ = node_ptr_->create_publisher<geometry_msgs::msg::TwistStamped>(
-    node_ptr_->generate_global_name("actuator_command/twist"), 10);
-  command_thrust_pub_ = node_ptr_->create_publisher<as2_msgs::msg::Thrust>(
-    node_ptr_->generate_global_name("actuator_command/thrust"), 10);
 };
 
 BasicControlCommandsHandler::~BasicControlCommandsHandler()
 {
   number_of_instances_--;
-  if (number_of_instances_ == 0 && aux_node_ptr_ != nullptr) {
-    RCLCPP_INFO(aux_node_ptr_->get_logger(), "Deleting aux_node_ptr_");
+  if (number_of_instances_ == 0 && node_ptr_ != nullptr) {
+    RCLCPP_INFO(node_ptr_->get_logger(), "Deleting node_ptr_");
     set_mode_client_.reset();
     platform_info_sub_.reset();
-    aux_node_ptr_.reset();
   }
 };
 
@@ -46,11 +44,6 @@ bool BasicControlCommandsHandler::sendCommand()
   static auto last_time = this->node_ptr_->now();
 
   setPlatformControlMode();
-
-  if (this->node_ptr_->now() - last_time > rclcpp::Duration(1.0f / AUX_NODE_SPIN_RATE)) {
-    rclcpp::spin_some(this->aux_node_ptr_);
-    last_time = this->node_ptr_->now();
-  }
 
   if (this->current_mode_ != desired_control_mode_) {
     if (!setMode(desired_control_mode_)) {
@@ -87,36 +80,36 @@ bool BasicControlCommandsHandler::setMode(const as2_msgs::msg::PlatformControlMo
   auto request = std::make_shared<as2_msgs::srv::SetPlatformControlMode::Request>();
   request->control_mode = mode;
 
-  RCLCPP_INFO(node_ptr_->get_logger(), "waiting for_service");
-  RCLCPP_INFO(node_ptr_->get_logger(), "ptr address=  %x", set_mode_client_.get());
+  // RCLCPP_INFO(node_ptr_->get_logger(), "waiting for_service");
+  // RCLCPP_INFO(node_ptr_->get_logger(), "ptr address=  %x", set_mode_client_.get());
   while (!set_mode_client_->wait_for_service(std::chrono::seconds(1))) {
-    RCLCPP_INFO(node_ptr_->get_logger(), "waiting for service ok");
+    // RCLCPP_INFO(node_ptr_->get_logger(), "waiting for service ok");
     if (!rclcpp::ok()) {
-      RCLCPP_ERROR(
-        aux_node_ptr_->get_logger(), "Interrupted while waiting for the service. Exiting.");
+      RCLCPP_ERROR(node_ptr_->get_logger(), "Interrupted while waiting for the service. Exiting.");
       return false;
     }
-    RCLCPP_INFO(aux_node_ptr_->get_logger(), "service not available, waiting again...");
+    RCLCPP_INFO(node_ptr_->get_logger(), "service not available, waiting again...");
   }
-  RCLCPP_INFO(aux_node_ptr_->get_logger(), "service available");
+  // RCLCPP_INFO(node_ptr_->get_logger(), "service available");
 
   auto result = set_mode_client_->async_send_request(request);
-  if (
-    rclcpp::spin_until_future_complete(aux_node_ptr_, result, std::chrono::seconds(1)) ==
+  
+  if (rclcpp::spin_until_future_complete(  node_ptr_->get_node_base_interface()
+    , result, std::chrono::seconds(1)) ==
     rclcpp::executor::FutureReturnCode::SUCCESS) {
-    RCLCPP_INFO(aux_node_ptr_->get_logger(), "Platform Control Mode changed sucessfully");
-    current_mode_ = mode; // set current_mode_ to the new mode to avoid issues while current_mode_ is not updated
+    RCLCPP_INFO(node_ptr_->get_logger(), "Platform Control Mode changed sucessfully");
+    current_mode_ =
+      mode;  // set current_mode_ to the new mode to avoid issues while current_mode_ is not updated
   } else {
     RCLCPP_ERROR(
-      aux_node_ptr_->get_logger(), " Platform Control Mode was not able to be settled sucessfully");
+      node_ptr_->get_logger(), " Platform Control Mode was not able to be settled sucessfully");
     return false;
   }
-  RCLCPP_INFO(aux_node_ptr_->get_logger(), "service called correctly");
+  // RCLCPP_INFO(node_ptr_->get_logger(), "service called correctly");
   return true;
 };
 
 int BasicControlCommandsHandler::number_of_instances_ = 0;
-std::shared_ptr<rclcpp::Node> BasicControlCommandsHandler::aux_node_ptr_ = nullptr;
 rclcpp::Client<as2_msgs::srv::SetPlatformControlMode>::SharedPtr
   BasicControlCommandsHandler::set_mode_client_ = nullptr;
 rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr
