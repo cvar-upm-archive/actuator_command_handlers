@@ -13,6 +13,7 @@
 #include "as2_core/node.hpp"
 #include "as2_core/names/topics.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "as2_core/names/topics.hpp"
 
 #define AUX_NODE_SPIN_RATE 10
 
