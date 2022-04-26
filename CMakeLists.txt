@@ -10,7 +10,6 @@ endif()
 set(PROJECT_DEPENDENCIES
   ament_cmake
   rclcpp
-  rclcpp_action
   std_msgs
   sensor_msgs
   geometry_msgs
