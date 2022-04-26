@@ -12,6 +12,7 @@
 
 #include "as2_core/node.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "as2_core/names/topics.hpp"
 
 //TODO: RETHINK HOW CURRENT MODE IS CHECKED AND CHANGED
 
