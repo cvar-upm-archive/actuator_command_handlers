@@ -31,7 +31,7 @@ public:
 
 private:
   YawMode yaw_mode_;
-  as2_msgs::msg::PlatformControlMode ownSetPlatformControlMode();
+  as2_msgs::msg::ControlMode ownSetControlMode();
 };
 
 }  // namespace controlCommandsHandlers

@@ -28,13 +28,13 @@ bool AcroControl::sendAngleRatesWithNormalizedThrust(
   return this->sendCommand();
 };
 
-as2_msgs::msg::PlatformControlMode AcroControl::ownSetPlatformControlMode()
+as2_msgs::msg::ControlMode AcroControl::ownSetControlMode()
 {
-  as2_msgs::msg::PlatformControlMode platform_control_mode_msg;
+  as2_msgs::msg::ControlMode platform_control_mode_msg;
 
-  platform_control_mode_msg.control_mode = as2_msgs::msg::PlatformControlMode::ACRO_MODE;
-  platform_control_mode_msg.yaw_mode = as2_msgs::msg::PlatformControlMode::YAW_SPEED;
-  platform_control_mode_msg.reference_frame = as2_msgs::msg::PlatformControlMode::BODY_FLU_FRAME;
+  platform_control_mode_msg.control_mode = as2_msgs::msg::ControlMode::ACRO;
+  platform_control_mode_msg.yaw_mode = as2_msgs::msg::ControlMode::YAW_SPEED;
+  platform_control_mode_msg.reference_frame = as2_msgs::msg::ControlMode::BODY_FLU_FRAME;
 
   return platform_control_mode_msg;
 };

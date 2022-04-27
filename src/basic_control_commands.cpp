@@ -10,10 +10,10 @@ BasicControlCommandsHandler::BasicControlCommandsHandler(as2::Node *as2_ptr) : n
   number_of_instances_++;
   if (number_of_instances_ == 0) {
     set_mode_client_ptr_ =
-        std::make_shared<as2::SynchronousServiceClient<as2_msgs::srv::SetPlatformControlMode>>(
+        std::make_shared<as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>>(
             as2_names::services::platform::set_platform_control_mode);
     // aux_node_ptr_ = std::make_shared<rclcpp::Node>("command_handler_aux_node");
-    // set_mode_client_ = aux_node_ptr_->create_client<as2_msgs::srv::SetPlatformControlMode>(
+    // set_mode_client_ = aux_node_ptr_->create_client<as2_msgs::srv::SetControlMode>(
     //     node_ptr_->generate_global_name("set_platform_control_mode"));
   }
 
@@ -46,7 +46,7 @@ BasicControlCommandsHandler::~BasicControlCommandsHandler() {
 bool BasicControlCommandsHandler::sendCommand() {
   static auto last_time = this->node_ptr_->now();
 
-  setPlatformControlMode();
+  setControlMode();
 
   if (this->node_ptr_->now() - last_time > rclcpp::Duration(1.0f / AUX_NODE_SPIN_RATE)) {
     // rclcpp::spin_some(this->aux_node_ptr_);
@@ -81,9 +81,9 @@ void BasicControlCommandsHandler::publishCommands() {
   command_thrust_pub_->publish(command_thrust_msg_);
 }
 
-bool BasicControlCommandsHandler::setMode(const as2_msgs::msg::PlatformControlMode &mode) {
+bool BasicControlCommandsHandler::setMode(const as2_msgs::msg::ControlMode &mode) {
   RCLCPP_INFO(node_ptr_->get_logger(), "Setting control mode to %d", mode.control_mode);
-  auto request = std::make_shared<as2_msgs::srv::SetPlatformControlMode::Request>();
+  auto request = std::make_shared<as2_msgs::srv::SetControlMode::Request>();
   request->control_mode = mode;
   auto response = set_mode_client_ptr_->sendRequest(request);
   if (response.success) {
@@ -94,13 +94,13 @@ bool BasicControlCommandsHandler::setMode(const as2_msgs::msg::PlatformControlMo
 
 int BasicControlCommandsHandler::number_of_instances_ = 0;
 // std::shared_ptr<rclcpp::Node> BasicControlCommandsHandler::aux_node_ptr_ = nullptr;
-rclcpp::Client<as2_msgs::srv::SetPlatformControlMode>::SharedPtr
+rclcpp::Client<as2_msgs::srv::SetControlMode>::SharedPtr
     BasicControlCommandsHandler::set_mode_client_ = nullptr;
 rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr
     BasicControlCommandsHandler::platform_info_sub_ = nullptr;
-as2_msgs::msg::PlatformControlMode BasicControlCommandsHandler::current_mode_ =
-    as2_msgs::msg::PlatformControlMode();
-as2::SynchronousServiceClient<as2_msgs::srv::SetPlatformControlMode>::SharedPtr
+as2_msgs::msg::ControlMode BasicControlCommandsHandler::current_mode_ =
+    as2_msgs::msg::ControlMode();
+as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>::SharedPtr
     BasicControlCommandsHandler::set_mode_client_ptr_ = nullptr;
 
 }  // namespace controlCommandsHandlers

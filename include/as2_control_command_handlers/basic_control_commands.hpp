@@ -5,7 +5,7 @@
 #include <as2_msgs/msg/platform_info.hpp>
 #include <as2_msgs/msg/thrust.hpp>
 #include <as2_msgs/srv/detail/set_platform_control_mode__struct.hpp>
-#include <as2_msgs/srv/set_platform_control_mode.hpp>
+#include <as2_msgs/srv/set_control_mode.hpp>
 #include <functional>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
@@ -17,6 +17,7 @@
 #include "as2_core/names/topics.hpp"
 #include "as2_core/names/services.hpp"
 #include "as2_core/synchronous_service_client.hpp"
+#include "as2_msgs/msg/control_mode.hpp"
 
 #define AUX_NODE_SPIN_RATE 10
 
@@ -33,10 +34,10 @@ public:
 private:
   static int number_of_instances_;
 
-  static rclcpp::Client<as2_msgs::srv::SetPlatformControlMode>::SharedPtr set_mode_client_;
+  static rclcpp::Client<as2_msgs::srv::SetControlMode>::SharedPtr set_mode_client_;
   static rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr platform_info_sub_;
-  static as2::SynchronousServiceClient<as2_msgs::srv::SetPlatformControlMode>::SharedPtr  set_mode_client_ptr_;
-  static as2_msgs::msg::PlatformControlMode current_mode_;
+  static as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>::SharedPtr  set_mode_client_ptr_;
+  static as2_msgs::msg::ControlMode current_mode_;
 
 protected:
   as2::Node * node_ptr_;
@@ -44,7 +45,7 @@ protected:
   geometry_msgs::msg::TwistStamped command_twist_msg_;
   as2_msgs::msg::Thrust command_thrust_msg_;
 
-  virtual as2_msgs::msg::PlatformControlMode ownSetPlatformControlMode() = 0;
+  virtual as2_msgs::msg::ControlMode ownSetControlMode() = 0;
 
   bool sendCommand();
 
@@ -52,10 +53,10 @@ private:
   rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr command_twist_pub_;
   rclcpp::Publisher<as2_msgs::msg::Thrust>::SharedPtr command_thrust_pub_;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr command_pose_pub_;
-  as2_msgs::msg::PlatformControlMode desired_control_mode_;
+  as2_msgs::msg::ControlMode desired_control_mode_;
 
-  bool setMode(const as2_msgs::msg::PlatformControlMode & mode);
-  void setPlatformControlMode() { desired_control_mode_ = ownSetPlatformControlMode(); };
+  bool setMode(const as2_msgs::msg::ControlMode & mode);
+  void setControlMode() { desired_control_mode_ = ownSetControlMode(); };
   void publishCommands();
 };
 

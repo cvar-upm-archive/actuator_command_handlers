@@ -29,7 +29,7 @@ public:
     const float & normalized_thrust);
 
 private:
-  as2_msgs::msg::PlatformControlMode ownSetPlatformControlMode();
+  as2_msgs::msg::ControlMode ownSetControlMode();
 };
 
 }  // namespace controlCommandsHandlers

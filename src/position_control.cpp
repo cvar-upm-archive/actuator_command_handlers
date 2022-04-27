@@ -37,17 +37,17 @@ bool PositionControl::sendPositionCommandWithYawSpeed(
   return this->sendCommand();
 };
 
-as2_msgs::msg::PlatformControlMode PositionControl::ownSetPlatformControlMode()
+as2_msgs::msg::ControlMode PositionControl::ownSetControlMode()
 {
-  as2_msgs::msg::PlatformControlMode platform_control_mode_msg;
+  as2_msgs::msg::ControlMode platform_control_mode_msg;
 
-  platform_control_mode_msg.control_mode = as2_msgs::msg::PlatformControlMode::POSITION_MODE;
+  platform_control_mode_msg.control_mode = as2_msgs::msg::ControlMode::POSITION;
   if (yaw_mode_ == YAW_ANGLE) {
-    platform_control_mode_msg.yaw_mode = as2_msgs::msg::PlatformControlMode::YAW_ANGLE;
+    platform_control_mode_msg.yaw_mode = as2_msgs::msg::ControlMode::YAW_ANGLE;
   } else {
-    platform_control_mode_msg.yaw_mode = as2_msgs::msg::PlatformControlMode::YAW_SPEED;
+    platform_control_mode_msg.yaw_mode = as2_msgs::msg::ControlMode::YAW_SPEED;
   }
-  platform_control_mode_msg.reference_frame = as2_msgs::msg::PlatformControlMode::LOCAL_ENU_FRAME;
+  platform_control_mode_msg.reference_frame = as2_msgs::msg::ControlMode::LOCAL_ENU_FRAME;
 
   return platform_control_mode_msg;
 };

@@ -38,17 +38,17 @@ bool SpeedControl::sendSpeedCommandWithYawSpeed(
   return this->sendCommand();
 };
 
-as2_msgs::msg::PlatformControlMode SpeedControl::ownSetPlatformControlMode()
+as2_msgs::msg::ControlMode SpeedControl::ownSetControlMode()
 {
-  as2_msgs::msg::PlatformControlMode platform_control_mode_msg;
+  as2_msgs::msg::ControlMode platform_control_mode_msg;
 
-  platform_control_mode_msg.control_mode = as2_msgs::msg::PlatformControlMode::SPEED_MODE;
+  platform_control_mode_msg.control_mode = as2_msgs::msg::ControlMode::SPEED;
   if (yaw_mode_ == YAW_ANGLE) {
-    platform_control_mode_msg.yaw_mode = as2_msgs::msg::PlatformControlMode::YAW_ANGLE;
+    platform_control_mode_msg.yaw_mode = as2_msgs::msg::ControlMode::YAW_ANGLE;
   } else {
-    platform_control_mode_msg.yaw_mode = as2_msgs::msg::PlatformControlMode::YAW_SPEED;
+    platform_control_mode_msg.yaw_mode = as2_msgs::msg::ControlMode::YAW_SPEED;
   }
-  platform_control_mode_msg.reference_frame = as2_msgs::msg::PlatformControlMode::LOCAL_ENU_FRAME;
+  platform_control_mode_msg.reference_frame = as2_msgs::msg::ControlMode::LOCAL_ENU_FRAME;
 
   return platform_control_mode_msg;
 };
