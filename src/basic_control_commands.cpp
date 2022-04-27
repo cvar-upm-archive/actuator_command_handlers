@@ -2,7 +2,6 @@
 
 #include <as2_core/names/services.hpp>
 #include <as2_core/synchronous_service_client.hpp>
-#include <as2_msgs/srv/detail/set_platform_control_mode__struct.hpp>
 
 namespace as2 {
 namespace controlCommandsHandlers {

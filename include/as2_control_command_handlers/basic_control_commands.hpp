@@ -4,7 +4,6 @@
 #include <as2_core/synchronous_service_client.hpp>
 #include <as2_msgs/msg/platform_info.hpp>
 #include <as2_msgs/msg/thrust.hpp>
-#include <as2_msgs/srv/detail/set_platform_control_mode__struct.hpp>
 #include <as2_msgs/srv/set_control_mode.hpp>
 #include <functional>
 #include <geometry_msgs/msg/pose_stamped.hpp>
