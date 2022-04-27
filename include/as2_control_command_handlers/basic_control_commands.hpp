@@ -1,8 +1,10 @@
 #ifndef BASIC_CONTROL_COMMANDS_HPP
 #define BASIC_CONTROL_COMMANDS_HPP
 
+#include <as2_core/synchronous_service_client.hpp>
 #include <as2_msgs/msg/platform_info.hpp>
 #include <as2_msgs/msg/thrust.hpp>
+#include <as2_msgs/srv/detail/set_platform_control_mode__struct.hpp>
 #include <as2_msgs/srv/set_platform_control_mode.hpp>
 #include <functional>
 #include <geometry_msgs/msg/pose_stamped.hpp>
@@ -11,9 +13,10 @@
 #include <thread>
 
 #include "as2_core/node.hpp"
-#include "as2_core/names/topics.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "as2_core/names/topics.hpp"
+#include "as2_core/names/services.hpp"
+#include "as2_core/synchronous_service_client.hpp"
 
 #define AUX_NODE_SPIN_RATE 10
 
@@ -32,6 +35,7 @@ private:
 
   static rclcpp::Client<as2_msgs::srv::SetPlatformControlMode>::SharedPtr set_mode_client_;
   static rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr platform_info_sub_;
+  static as2::SynchronousServiceClient<as2_msgs::srv::SetPlatformControlMode>::SharedPtr  set_mode_client_ptr_;
   static as2_msgs::msg::PlatformControlMode current_mode_;
 
 protected:
