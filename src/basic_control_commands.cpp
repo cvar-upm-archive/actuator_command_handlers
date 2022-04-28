@@ -6,16 +6,16 @@
 namespace as2 {
 namespace controlCommandsHandlers {
 BasicControlCommandsHandler::BasicControlCommandsHandler(as2::Node *as2_ptr) : node_ptr_(as2_ptr) {
-  number_of_instances_++;
-  if (number_of_instances_ == 0) {
+  // if (set_mode_client_ptr_.get() == nullptr) {
     set_mode_client_ptr_ =
         std::make_shared<as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>>(
             as2_names::services::platform::set_platform_control_mode);
     // aux_node_ptr_ = std::make_shared<rclcpp::Node>("command_handler_aux_node");
     // set_mode_client_ = aux_node_ptr_->create_client<as2_msgs::srv::SetControlMode>(
     //     node_ptr_->generate_global_name("set_platform_control_mode"));
-  }
+  // }
 
+  number_of_instances_++;
   RCLCPP_INFO(node_ptr_->get_logger(),
               "There are %d instances of BasicControlCommandsHandler created",
               number_of_instances_);
@@ -99,8 +99,8 @@ rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr
     BasicControlCommandsHandler::platform_info_sub_ = nullptr;
 as2_msgs::msg::ControlMode BasicControlCommandsHandler::current_mode_ =
     as2_msgs::msg::ControlMode();
-as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>::SharedPtr
-    BasicControlCommandsHandler::set_mode_client_ptr_ = nullptr;
+// as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>::SharedPtr
+//     BasicControlCommandsHandler::set_mode_client_ptr_ = nullptr;
 
 }  // namespace controlCommandsHandlers
 }  // namespace as2

@@ -35,7 +35,7 @@ private:
 
   static rclcpp::Client<as2_msgs::srv::SetControlMode>::SharedPtr set_mode_client_;
   static rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr platform_info_sub_;
-  static as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>::SharedPtr  set_mode_client_ptr_;
+  as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>::SharedPtr  set_mode_client_ptr_;
   static as2_msgs::msg::ControlMode current_mode_;
 
 protected:
