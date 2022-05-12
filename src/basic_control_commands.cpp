@@ -82,13 +82,15 @@ void BasicControlCommandsHandler::publishCommands() {
 
 bool BasicControlCommandsHandler::setMode(const as2_msgs::msg::ControlMode &mode) {
   RCLCPP_INFO(node_ptr_->get_logger(), "Setting control mode to %d", mode.control_mode);
-  auto request = std::make_shared<as2_msgs::srv::SetControlMode::Request>();
-  request->control_mode = mode;
-  auto response = set_mode_client_ptr_->sendRequest(request);
-  if (response.success) {
+  auto request = as2_msgs::srv::SetControlMode::Request();
+  auto response = as2_msgs::srv::SetControlMode::Response();
+  request.control_mode = mode;
+  bool out = set_mode_client_ptr_->sendRequest(request,response);
+  if (out && response.success) {
     current_mode_ = mode;
+    return response.success;
   }
-  return response.success;
+  return false;
 };
 
 int BasicControlCommandsHandler::number_of_instances_ = 0;
