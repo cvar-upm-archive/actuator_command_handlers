@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       acro_control.cpp
- *  \brief      acro_control implementation file
+ *  \file       position_control.hpp
+ *  \brief      position_control header file
  *  \authors    Miguel Fernández Cortizas
  *              Pedro Arias Pérez
  *              David Pérez Saura
@@ -34,45 +34,49 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#include "actuator_command_handlers/acro_control.hpp"
+#ifndef POSITION_CONTROL_COMMANDS_HPP
+#define POSITION_CONTROL_COMMANDS_HPP
+
+#include "as2_core/node.hpp"
+#include "basic_actuator_commands.hpp"
+
+#include <nav_msgs/msg/odometry.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <geometry_msgs/msg/twist_stamped.hpp>
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+
+#include <functional>
+#include <thread>
+#include <memory>
 
 namespace as2
 {
   namespace actuatorCommandsHandlers
   {
-    AcroControl::AcroControl(as2::Node *node_ptr) : BasicActuatorCommandsHandler(node_ptr){};
-
-    bool AcroControl::sendAngleRatesWithThrust(
-        const float &x, const float &y, const float &z, const float &thrust)
+    class PositionControl : public as2::actuatorCommandsHandlers::BasicActuatorCommandsHandler
     {
-      this->command_twist_msg_.twist.angular.x = x;
-      this->command_twist_msg_.twist.angular.y = y;
-      this->command_twist_msg_.twist.angular.z = z;
-      this->command_thrust_msg_.thrust = thrust;
-      return this->sendCommand();
-    };
-    bool AcroControl::sendAngleRatesWithNormalizedThrust(
-        const float &x, const float &y, const float &z, const float &thrust,
-        const float &normalized_thrust)
-    {
-      this->command_twist_msg_.twist.angular.x = x;
-      this->command_twist_msg_.twist.angular.y = y;
-      this->command_twist_msg_.twist.angular.z = z;
-      this->command_thrust_msg_.thrust = thrust;
-      this->command_thrust_msg_.thrust_normalized = normalized_thrust;
-      return this->sendCommand();
-    };
+    public:
+      PositionControl(as2::Node *node_ptr);
+      enum YawMode
+      {
+        NONE,
+        YAW_ANGLE,
+        YAW_RATE
+      };
 
-    as2_msgs::msg::ControlMode AcroControl::ownSetControlMode()
-    {
-      as2_msgs::msg::ControlMode platform_control_mode_msg;
+      bool sendPositionCommandWithYawAngle(
+          const float &x, const float &y, const float &z, const float &yaw_angle);
+      bool sendPositionCommandWithYawAngle(
+          const float &x, const float &y, const float &z, const geometry_msgs::msg::Quaternion &q);
+      bool sendPositionCommandWithYawSpeed(
+          const float &x, const float &y, const float &z, const float &yaw_speed);
 
-      platform_control_mode_msg.control_mode = as2_msgs::msg::ControlMode::ACRO;
-      platform_control_mode_msg.yaw_mode = as2_msgs::msg::ControlMode::YAW_SPEED;
-      platform_control_mode_msg.reference_frame = as2_msgs::msg::ControlMode::BODY_FLU_FRAME;
-
-      return platform_control_mode_msg;
+    private:
+      YawMode yaw_mode_;
+      as2_msgs::msg::ControlMode ownSetControlMode();
     };
 
   } // namespace actuatorCommandsHandlers
 } // namespace as2
+
+#endif // POSITION_CONTROL_COMMANDS_HPP

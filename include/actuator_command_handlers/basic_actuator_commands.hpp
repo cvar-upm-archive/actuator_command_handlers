@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       acro_control.cpp
- *  \brief      acro_control implementation file
+ *  \file       basic_actuator_commands.hpp
+ *  \brief      basic_actuator_commands header file
  *  \authors    Miguel Fernández Cortizas
  *              Pedro Arias Pérez
  *              David Pérez Saura
@@ -34,45 +34,68 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#include "actuator_command_handlers/acro_control.hpp"
+#ifndef BASIC_ACTUATOR_COMMANDS_HPP
+#define BASIC_ACTUATOR_COMMANDS_HPP
+
+#include "rclcpp/rclcpp.hpp"
+#include "as2_core/node.hpp"
+#include "as2_core/names/topics.hpp"
+#include "as2_core/names/services.hpp"
+#include "as2_core/synchronous_service_client.hpp"
+
+#include "as2_msgs/msg/control_mode.hpp"
+#include <as2_msgs/msg/platform_info.hpp>
+#include <as2_msgs/msg/thrust.hpp>
+#include <as2_msgs/srv/set_control_mode.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <geometry_msgs/msg/twist_stamped.hpp>
+
+#include <functional>
+#include <memory>
+#include <thread>
+
+#define AUX_NODE_SPIN_RATE 10
 
 namespace as2
 {
   namespace actuatorCommandsHandlers
   {
-    AcroControl::AcroControl(as2::Node *node_ptr) : BasicActuatorCommandsHandler(node_ptr){};
-
-    bool AcroControl::sendAngleRatesWithThrust(
-        const float &x, const float &y, const float &z, const float &thrust)
+    class BasicActuatorCommandsHandler
     {
-      this->command_twist_msg_.twist.angular.x = x;
-      this->command_twist_msg_.twist.angular.y = y;
-      this->command_twist_msg_.twist.angular.z = z;
-      this->command_thrust_msg_.thrust = thrust;
-      return this->sendCommand();
-    };
-    bool AcroControl::sendAngleRatesWithNormalizedThrust(
-        const float &x, const float &y, const float &z, const float &thrust,
-        const float &normalized_thrust)
-    {
-      this->command_twist_msg_.twist.angular.x = x;
-      this->command_twist_msg_.twist.angular.y = y;
-      this->command_twist_msg_.twist.angular.z = z;
-      this->command_thrust_msg_.thrust = thrust;
-      this->command_thrust_msg_.thrust_normalized = normalized_thrust;
-      return this->sendCommand();
-    };
+    public:
+      BasicActuatorCommandsHandler(as2::Node *as2_ptr);
+      ~BasicActuatorCommandsHandler();
 
-    as2_msgs::msg::ControlMode AcroControl::ownSetControlMode()
-    {
-      as2_msgs::msg::ControlMode platform_control_mode_msg;
+    private:
+      static int number_of_instances_;
 
-      platform_control_mode_msg.control_mode = as2_msgs::msg::ControlMode::ACRO;
-      platform_control_mode_msg.yaw_mode = as2_msgs::msg::ControlMode::YAW_SPEED;
-      platform_control_mode_msg.reference_frame = as2_msgs::msg::ControlMode::BODY_FLU_FRAME;
+      static rclcpp::Client<as2_msgs::srv::SetControlMode>::SharedPtr set_mode_client_;
+      static rclcpp::Subscription<as2_msgs::msg::PlatformInfo>::SharedPtr platform_info_sub_;
+      as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>::SharedPtr set_mode_client_ptr_;
+      static as2_msgs::msg::ControlMode current_mode_;
 
-      return platform_control_mode_msg;
+    protected:
+      as2::Node *node_ptr_;
+      geometry_msgs::msg::PoseStamped command_pose_msg_;
+      geometry_msgs::msg::TwistStamped command_twist_msg_;
+      as2_msgs::msg::Thrust command_thrust_msg_;
+
+      virtual as2_msgs::msg::ControlMode ownSetControlMode() = 0;
+
+      bool sendCommand();
+
+    private:
+      rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr command_twist_pub_;
+      rclcpp::Publisher<as2_msgs::msg::Thrust>::SharedPtr command_thrust_pub_;
+      rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr command_pose_pub_;
+      as2_msgs::msg::ControlMode desired_control_mode_;
+
+      bool setMode(const as2_msgs::msg::ControlMode &mode);
+      void setControlMode() { desired_control_mode_ = ownSetControlMode(); };
+      void publishCommands();
     };
 
   } // namespace actuatorCommandsHandlers
 } // namespace as2
+
+#endif // BASIC_ACTUATOR_COMMANDS_HPP
