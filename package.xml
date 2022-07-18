@@ -3,7 +3,7 @@
 
 <package format="3">
   <name>actuator_command_handlers</name>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>Actuation command handlers to ease the control of the UAVs inside the Aerostack2 framework</description>
   <maintainer email="cvar.upm3@gmail.com">Computer Vision And Aerial Robotics Group (UPM)</maintainer>
   <license>BSD-3-Clause</license>

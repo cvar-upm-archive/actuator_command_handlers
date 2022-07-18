@@ -87,7 +87,7 @@ namespace as2
 
       setControlMode();
 
-      if (this->node_ptr_->now() - last_time > rclcpp::Duration(1.0f / AUX_NODE_SPIN_RATE))
+      if (this->node_ptr_->now() - last_time > rclcpp::Duration::from_seconds(1.0f / AUX_NODE_SPIN_RATE))
       {
         // rclcpp::spin_some(this->aux_node_ptr_);
         last_time = this->node_ptr_->now();
