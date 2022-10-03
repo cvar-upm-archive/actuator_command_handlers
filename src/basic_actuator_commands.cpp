@@ -45,7 +45,7 @@ namespace as2
       // if (set_mode_client_ptr_.get() == nullptr) {
       set_mode_client_ptr_ =
           std::make_shared<as2::SynchronousServiceClient<as2_msgs::srv::SetControlMode>>(
-              as2_names::services::platform::set_platform_control_mode);
+              as2_names::services::platform::set_platform_control_mode, node_ptr_);
       // aux_node_ptr_ = std::make_shared<rclcpp::Node>("command_handler_aux_node");
       // set_mode_client_ = aux_node_ptr_->create_client<as2_msgs::srv::SetControlMode>(
       //     node_ptr_->generate_global_name("set_platform_control_mode"));
